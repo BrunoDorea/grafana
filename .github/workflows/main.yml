@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: dev
-      url: 'brunodorea.github.io'
+      url: 'https://brunodorea.github.io/'
     needs: build
     steps:
     - name: run a one-line script
