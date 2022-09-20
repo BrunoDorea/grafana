@@ -86,4 +86,16 @@ exit
 exit
 ```
 
+### Ferramenta para estressar o servidor
 
+```script
+sudo apt-get install stress-ng
+
+stress-ng -c 0 -l 95
+```
+
+### Estressando a Memória do servidor
+
+```script
+$ stress-ng --vm-bytes $(awk '/MemAvailable/{printf "%d\n", $2 * 0.9;}' < /proc/meminfo)k --vm-keep -m 1
+```
