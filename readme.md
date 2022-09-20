@@ -20,7 +20,7 @@ vagrant up
 ```script
 vagrant ssh
 ```
- 
+
 ### Atualizando pacotes
 
 ```script
@@ -97,5 +97,23 @@ stress-ng -c 0 -l 95
 ### Estressando a Memória do servidor
 
 ```script
-$ stress-ng --vm-bytes $(awk '/MemAvailable/{printf "%d\n", $2 * 0.9;}' < /proc/meminfo)k --vm-keep -m 1
+stress-ng --vm-bytes $(awk '/MemAvailable/{printf "%d\n", $2 * 0.9;}' < /proc/meminfo)k --vm-keep -m 1
+```
+
+### Alterando as permissões do socket do Docker
+
+```script
+sudo usermod -aG docker telegraf
+
+cat telegraf.conf | grep -A 45 inputs.docker | egrep -v "^#"
+
+[[inputs.docker]]
+   endpoint = "unix:///var/run/docker.sock"
+   container_names = []
+   container_name_include = []
+   container_name_exclude = []
+   timeout = "5s"
+   total = false
+
+sudo service telegraf status
 ```
