@@ -1,0 +1,21 @@
+name: DemoCD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: run a one-line script
+      run: echo Hello!
+      
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+      url: 'brunodorea.github.io'
+    needs: build
+    steps:
+    - name: run a one-line script
+      run: echo Deploy Dev!
