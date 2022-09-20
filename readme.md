@@ -117,3 +117,68 @@ cat telegraf.conf | grep -A 45 inputs.docker | egrep -v "^#"
 
 sudo service telegraf status
 ```
+
+### Instalando o Apache
+
+```script
+sudo apt-get install -y apache2
+```
+
+### Alterando permissões para leitura de log do Apache
+
+```script
+sudo usermod -a -G adm telegraf
+
+cat telegraf.conf | grep -A 45 "\[\[inputs.logparser\]\]" | egrep -v "^#"
+ [[inputs.logparser]]
+   files = ["/var/log/apache2/access.log"]
+   from_beginning = true
+   [inputs.logparser.grok]
+     patterns = ["%{COMBINED_LOG_FORMAT}"]
+     measurement = "apache_access_log"
+
+sudo service telegraf restart
+```
+
+### Criando painéis de monitoramento
+
+```script
+SELECT count("request")
+FROM "apache_access_log"
+WHERE "host" =  'ubuntu-bionic'
+  AND "resp_code" = '404'
+  AND $timeFilter 
+  AND "agent" != 'Go-http-client/1.1'
+  AND agent != 'worldping-api'
+```
+
+```script
+SELECT  "request"
+FROM "apache_access_log"
+WHERE "host" =~ /^$server$/ 
+  AND "resp_code" =~ /^$code$/ 
+  AND $timeFilter  
+
+SELECT  "client_ip"
+FROM "apache_access_log"
+WHERE "host" =~ /^$server$/ 
+  AND "resp_code" =~ /^$code$/ 
+  AND $timeFilter  
+```
+
+### Estressando a aplicação
+
+```script
+for i in {1..501}; do curl http://localhost/  > /dev/null 2>&1;done
+
+for i in {1..501}; do curl http://localhost/alura  > /dev/null 2>&1;done
+```
+
+
+```script
+
+```
+
+```script
+
+```
