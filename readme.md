@@ -52,3 +52,38 @@ ID=$(id -u)
 
 docker run -d --user $ID -v /home/vagrant/volumes/grafana/:/var/lib/grafana -p 3000:3000 --name=grafana --network=grafana-net grafana/grafana
 ```
+
+### Configurando e Instalando o InfluxDB
+
+```script
+mkdir -p $PWD/volumes/influxdb
+
+docker run -d -v "$PWD/volumes/influxdb:/var/lib/influxdb" -p 8083:8083 -p 8086:8086 -p 25826:25826/udp --name=influxdb --network=grafana-net influxdb:1.0
+
+wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+
+/etc/lsb-release
+
+"deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+sudo apt-get update && sudo apt-get install telegraf
+
+sudo service telegraf start
+```
+
+### Conectando no InfluxDB e acessando as métricas
+
+```script
+docker exec -ti influxdb bash
+
+influx
+
+use telegraf
+
+show measurements
+
+exit
+exit
+```
+
+
