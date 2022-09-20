@@ -4,6 +4,7 @@
 
 - CMDer
 - Vagrant
+- Telegraf
 - VirtualBox
 
 ## Configurações
